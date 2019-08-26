@@ -1,4 +1,4 @@
-package com.git.poi.factory;
+package com.git.poi.mapping;
 
 import com.git.poi.annotation.Excel;
 import com.git.poi.annotation.ExcelField;

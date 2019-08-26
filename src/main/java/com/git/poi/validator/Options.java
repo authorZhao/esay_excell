@@ -1,8 +1,7 @@
 package com.git.poi.validator;
 
-
 import com.git.poi.exception.ColumnConvertException;
-import com.git.poi.factory.ExcelProperty;
+import com.git.poi.mapping.ExcelProperty;
 
 import java.lang.reflect.Method;
 import java.util.List;

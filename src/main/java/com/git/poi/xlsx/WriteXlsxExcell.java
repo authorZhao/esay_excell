@@ -1,9 +1,9 @@
 package com.git.poi.xlsx;
 
-import com.git.poi.factory.ExcelMapping;
-import com.git.poi.factory.ExcelProperty;
-import com.git.poi.factory.FailRecord;
-import com.git.poi.util.PoIUtil;
+import com.git.poi.mapping.ExcelMapping;
+import com.git.poi.mapping.ExcelProperty;
+import com.git.poi.mapping.FailRecord;
+import com.git.poi.util.PoiUtil;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -34,8 +34,18 @@ public class WriteXlsxExcell {
         mExcelMapping = excelMapping;
         mMaxSheetRecords = maxSheetRecords;
     }
-
     public Workbook generateXlsxWorkbook(List<?> data, boolean isTemplate)  {
+        return generateXlsxWorkbook(data,isTemplate,null);
+    }
+
+    /**
+     *
+     * @param data 导出的数据
+     * @param isTemplate 是不是模板，是的话只有两行
+     * @param template 模板的规则文字
+     * @return
+     */
+    public Workbook generateXlsxWorkbook(List<?> data, boolean isTemplate, String template)  {
         //不用SXSSFWorkbook，太坑了
         //Workbook workbook = new SXSSFWorkbook();
         Workbook workbook = new XSSFWorkbook();
@@ -47,8 +57,8 @@ public class WriteXlsxExcell {
             //设置表头
             Sheet sheet = setXlsxHeader(workbook, propertyList, sheetName, isTemplate);
             //数据校验
-
-            //setValidation(data,sheet);
+            //setValidation(mExcelMapping.getPropertyList().get(3),sheet,new String[]{"是","否"},3);
+            if(isTemplate)continue;
             //设置表身
 
             if (null != data && data.size() > 0) {
@@ -101,11 +111,11 @@ public class WriteXlsxExcell {
         Sheet sheet = workbook.getSheetAt(0);
         Row row = sheet.getRow(0);
         Row newRow0 = newSheet.createRow(0);
-        PoIUtil.copyPoiRow(row,newRow0);
+        PoiUtil.copyPoiRow(row,newRow0);
         newRow0.createCell(row.getLastCellNum()).setCellValue("失败原因");
         for (int i = 0; i < data.size() ; i++) {
             Row newRow = newSheet.createRow(i+1);
-            PoIUtil.copyPoiRow(sheet.getRow(data.get(i).getRowNum()),newRow);
+            PoiUtil.copyPoiRow(sheet.getRow(data.get(i).getRowNum()),newRow);
             newRow.createCell(row.getLastCellNum()).setCellValue(data.get(i).getMessage()+"   位于原表格"+data.get(i).getRowNum()+"行");
         }
         logger.info("失败数据生成完毕");
@@ -120,7 +130,7 @@ public class WriteXlsxExcell {
      * @param regex 验证规则
      * @param clo 验证的列数
      */
-    private void setValidation(List<?> data, Sheet sheet, String[] regex, int clo) {
+    public void setValidation(List<?> data, Sheet sheet, String[] regex, int clo) {
         DataValidationHelper dvHelper = new XSSFDataValidationHelper((XSSFSheet) sheet);
         DataValidationConstraint dvConstraint = dvHelper
                 .createExplicitListConstraint(regex);
@@ -130,7 +140,14 @@ public class WriteXlsxExcell {
         // 输入非法数据时，弹窗警告框
         validation.setShowErrorBox(true);
         // 设置提示框
-        validation.createPromptBox("温馨提示", "请选择性别！！!");
+        String test="";
+        if(regex.length<=10){
+            test = PoiUtil.getString(regex);
+            test = "请在（"+test+"）之间选择";
+        }else{
+            test = "请在合法范围内输入";
+        }
+        validation.createPromptBox("温馨提示",test );
         validation.setShowPromptBox(true);
         validation.setEmptyCellAllowed(true);
         validation.setSuppressDropDownArrow(true);
@@ -141,10 +158,10 @@ public class WriteXlsxExcell {
 
     /**
      * 表头设置
-     * @param workbook
-     * @param propertyList
-     * @param sheetName
-     * @param isTemplate
+     * @param workbook 表
+     * @param propertyList 属性结合
+     * @param sheetName 表名
+     * @param isTemplate 是否是模板
      * @return
      */
     private Sheet setXlsxHeader(Workbook workbook, List<ExcelProperty> propertyList, String sheetName, boolean isTemplate) {
@@ -166,25 +183,15 @@ public class WriteXlsxExcell {
             //(int dx1, int dy1, int dx2, int dy2, short col1, int row1, short col2, int row2)
             //前四个参数是坐标点,后四个参数是编辑和显示批注时的大小.
             /**
-             *
-             *
-             * dx1 第1个单元格中x轴的偏移量
-             * dy1 第1个单元格中y轴的偏移量
-             * dx2 第2个单元格中x轴的偏移量
-             * dy2 第2个单元格中y轴的偏移量
-             * col1 第1个单元格的列号
-             * row1 第1个单元格的行号
-             * col2 第2个单元格的列号
-             * row2 第2个单元格的行号
-             *   *@param dx1  the x coordinate in EMU within the first cell.
-             *              * @param dy1  the y coordinate in EMU within the first cell.
-             *              * @param dx2  the x coordinate in EMU within the second cell.
-             *              * @param dy2  the y coordinate in EMU within the second cell.
-             *              * @param col1 the column (0 based) of the first cell.
-             *              * @param row1 the row (0 based) of the first cell.
-             *              * @param col2 the column (0 based) of the second cell.
-             *              * @param row2 the row (0 based) of the second cell.
-             *              * @return the newly created client anchor
+             *   *@param dx1  the x coordinate in EMU within the first cell. dx1 第1个单元格中x轴的偏移量
+             *   * @param dy1  the y coordinate in EMU within the first cell. dy1 第1个单元格中y轴的偏移量
+             *   * @param dx2  the x coordinate in EMU within the second cell. dx2 第2个单元格中x轴的偏移量
+             *   * @param dy2  the y coordinate in EMU within the second cell. dy2 第2个单元格中y轴的偏移量
+             *   * @param col1 the column (0 based) of the first cell.col1 第1个单元格的列号
+             *   * @param row1 the row (0 based) of the first cell. row1 第1个单元格的行号
+             *   * @param col2 the column (0 based) of the second cell.col2 第2个单元格的列号
+             *   * @param row2 the row (0 based) of the second cell. row2 第2个单元格的行号
+             *   * @return the newly created client anchor
              */
             ClientAnchor clientAnchor=draw.createAnchor(0,0,0,0,i,1,i+1,5);
             //输入批注信息
@@ -196,10 +203,26 @@ public class WriteXlsxExcell {
             //将批注添加到单元格对象中
             cell.setCellComment(comment);
         }
+        //如果是模板，设置规则文字
+       /* if(isTemplate){
+            CellRangeAddress region = new CellRangeAddress(1, 1, 0, propertyList.size()-1);
+            Row row1 = sheet.createRow(1);
+            row1.createCell(0).setCellValue(template);
+            CellStyle cellStyle = workbook.createCellStyle();
+            cellStyle.setFillBackgroundColor(IndexedColors.SEA_GREEN.getIndex());
+            cellStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
+            cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+            cellStyle.setWrapText(true);
+            row1.getCell(0).setCellStyle(cellStyle);
+            System.out.println(row.getHeight());
+            row1.setHeight((short)(row.getHeight()*15));
+            sheet.addMergedRegion(region);
+        }*/
         for (int i=0;i<row.getLastCellNum();i++) {
             Comment comment = row.getCell(i).getCellComment();
         }
         logger.info("表头设置完毕");
+
         return sheet;
     }
 
@@ -237,25 +260,15 @@ public class WriteXlsxExcell {
  * 在使用NPOI技术开发自动操作EXCEL软件时遇到不能精确设置列宽的问题。
  *
  * 如
- *
  * ISheet sheet1 = hssfworkbook.CreateSheet("Sheet1");
- *
  * sheet1.SetColumnWidth(0,  50 * 256);   // 在EXCEL文档中实际列宽为49.29
- *
  * sheet1.SetColumnWidth(1, 100 * 256);   // 在EXCEL文档中实际列宽为99.29
- *
  * sheet1.SetColumnWidth(2, 150 * 256);   // 在EXCEL文档中实际列宽为149.29
  *
  * 到此一般人应该知道问题出在哪了，解决方法如下:
- *
- *
- *
  * ISheet sheet1 = hssfworkbook.CreateSheet("Sheet1");
- *
  * sheet1.SetColumnWidth(0,  (int)((50 + 0.72) * 256));   // 在EXCEL文档中实际列宽为50
- *
  * sheet1.SetColumnWidth(1,  (int)((100 + 0.72) * 256));   // 在EXCEL文档中实际列宽为100
- *
  * sheet1.SetColumnWidth(2,  (int)((150 + 0.72) * 256));   // 在EXCEL文档中实际列宽为150
  */
 }

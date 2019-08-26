@@ -1,10 +1,11 @@
 package com.git.poi.xlsx;
 
 import com.git.poi.exception.CheckException;
-import com.git.poi.factory.ExcelMapping;
-import com.git.poi.factory.ExcelProperty;
-import com.git.poi.factory.FailRecord;
-import com.git.poi.factory.MappingFactory;
+import com.git.poi.exception.FileException;
+import com.git.poi.mapping.ExcelMapping;
+import com.git.poi.mapping.ExcelProperty;
+import com.git.poi.mapping.FailRecord;
+import com.git.poi.mapping.MappingFactory;
 import com.git.poi.validator.Check;
 import com.git.poi.validator.Options;
 import org.apache.commons.lang3.StringUtils;
@@ -66,9 +67,10 @@ public class ReadXlsxExcell<T> {
             workbook = new XSSFWorkbook(new FileInputStream(f));
         } catch (IOException e) {
             e.printStackTrace();
+            throw new FileException("无法读取该xlsx文件");
         }
         Sheet sheet = workbook.getSheetAt(0);
-        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {//从第二行开始读取
             T t = null;
             try {
                 t = mappingRowToList(sheet.getRow(i), excelMapping.getPropertyList());
@@ -76,7 +78,7 @@ public class ReadXlsxExcell<T> {
                 List<Integer> rowList = new ArrayList<>();
                 rowList.add(i);
                 m2.invoke(t,rowList);
-                exchage(t,excelMapping.getPropertyList().get(0),checkMap);
+                //exchage(t,excelMapping.getPropertyList().get(0),checkMap);
             }catch (Exception e){
                 FailRecord failRecord = new FailRecord();
                 String message = e.getMessage();
@@ -127,7 +129,13 @@ public class ReadXlsxExcell<T> {
         return flag;
     }
 
-
+    /**
+     *
+     * @param row xlsx文件的row，包含每条记录
+     * @param propertyList 导入的属性配置
+     * @return T
+     * @throws Exception
+     */
     private T mappingRowToList(Row row, List<ExcelProperty> propertyList) throws Exception {
         T t = null;
         try {

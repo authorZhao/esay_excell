@@ -1,7 +1,6 @@
 package com.git.poi.validator;
 
-import com.qdz.qdzmart.framework.utils.RegexUtils;
-
+import com.git.poi.util.RegexUtils;
 import java.util.function.Predicate;
 
 /**

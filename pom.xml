@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <commons.fileupload.version>1.3.3</commons.fileupload.version>
     </properties>
 
     <dependencies>
@@ -125,6 +126,18 @@
             <version>3.13</version>
         </dependency>
 
+        <!-- 文件上传组件 -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons.fileupload.version}</version>
+        </dependency>
+        <!-- zip处理包 -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.9</version>
+        </dependency>
 
     </dependencies>
 
