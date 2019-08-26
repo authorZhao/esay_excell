@@ -1,6 +1,6 @@
 package com.git.poi.exception;
 
-public class FileException extends ConvertException {
+public class FileException extends RuntimeException {
     public FileException() {
         super();
     }

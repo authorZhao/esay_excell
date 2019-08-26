@@ -9,10 +9,9 @@ import com.git.poi.mapping.MappingFactory;
 import com.git.poi.validator.Check;
 import com.git.poi.validator.Options;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,7 @@ public class ReadXlsxExcell<T> {
             e.printStackTrace();
             throw new FileException("无法读取该xlsx文件");
         }
-        Sheet sheet = workbook.getSheetAt(0);
+        XSSFSheet sheet = workbook.getSheetAt(0);
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {//从第二行开始读取
             T t = null;
             try {
@@ -136,7 +135,7 @@ public class ReadXlsxExcell<T> {
      * @return T
      * @throws Exception
      */
-    private T mappingRowToList(Row row, List<ExcelProperty> propertyList) throws Exception {
+    private T mappingRowToList(XSSFRow row, List<ExcelProperty> propertyList) throws Exception {
         T t = null;
         try {
             t = (T)clazz.newInstance();
@@ -145,7 +144,7 @@ public class ReadXlsxExcell<T> {
         }
         for (int i = 0; i < propertyList.size(); i++) {
 
-            Cell cell = row.getCell(i);
+            XSSFCell cell = row.getCell(i);
             String methodName = "set" + (new StringBuilder()).append(Character.toUpperCase(propertyList.get(i).getColumn().charAt(0))).append(propertyList.get(i).getColumn().substring(1)).toString();
             Field field = null;
             Method m2 = null;
@@ -179,14 +178,15 @@ public class ReadXlsxExcell<T> {
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    private void cellValueFormat (T t, Cell cell, Method m2, Field field, String chechMethod) throws InvocationTargetException, IllegalAccessException,CheckException{
+    private void cellValueFormat (T t, XSSFCell cell, Method m2, Field field, String chechMethod) throws InvocationTargetException, IllegalAccessException,CheckException{
         //TODO
         if(cell==null)return;
         switch (cell.getCellType()){
-            case 0:
+            case NUMERIC:
                 Number num = cell.getNumericCellValue();
                 if(StringUtils.isNotBlank(chechMethod)){
-                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellType(CellType.STRING);
+                    cell.setCellStyle(new XSSFCellStyle(new StylesTable()));
                     String s = cell.getStringCellValue();
                     Boolean flag=false;
                     try {
@@ -213,7 +213,7 @@ public class ReadXlsxExcell<T> {
                     break;
                 }
                 break;
-            case 1:
+            case STRING:
                 String value = cell.getStringCellValue();
                 m2.invoke(t,value);
                 if(StringUtils.isNotBlank(chechMethod)){
@@ -226,10 +226,17 @@ public class ReadXlsxExcell<T> {
                     if(!aaa)throw new CheckException("字段校验异常");
                 }
                 break;
-            case 4:
+            case BOOLEAN:
                 m2.invoke(t,cell.getBooleanCellValue());
                 break;
-            case 3:
+            case BLANK:
+                break;
+
+            case _NONE:
+                break;
+            case FORMULA:
+                break;
+            case ERROR:
                 break;
             default:
                 break;

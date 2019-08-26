@@ -2,11 +2,14 @@ package com.git.poi.mapping;
 
 
 import com.git.poi.validator.Options;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author authorZhao
  */
-
+@Data
+@Accessors(chain = true)
 public class ExcelProperty {
   /**
    * name，列的名字
@@ -88,156 +91,4 @@ public class ExcelProperty {
    */
   private String checkMethod;
 
-  public String getName() {
-    return name;
-  }
-
-  public ExcelProperty setName(String name) {
-    this.name = name;
-    return this;
-  }
-
-  public String getColumn() {
-    return column;
-  }
-
-  public ExcelProperty setColumn(String column) {
-    this.column = column;
-    return this;
-  }
-
-  public Short getWidth() {
-    return width;
-  }
-
-  public ExcelProperty setWidth(Short width) {
-    this.width = width;
-    return this;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
-  public ExcelProperty setComment(String comment) {
-    this.comment = comment;
-    return this;
-  }
-
-  public Integer getMaxLength() {
-    return maxLength;
-  }
-
-  public ExcelProperty setMaxLength(Integer maxLength) {
-    this.maxLength = maxLength;
-    return this;
-  }
-
-  public String getDateFormat() {
-    return dateFormat;
-  }
-
-  public ExcelProperty setDateFormat(String dateFormat) {
-    this.dateFormat = dateFormat;
-    return this;
-  }
-
-  public String getWriteConverter() {
-    return writeConverter;
-  }
-
-  public ExcelProperty setWriteConverter(String writeConverter) {
-    this.writeConverter = writeConverter;
-    return this;
-  }
-
-  public String getReadConverter() {
-    return readConverter;
-  }
-
-  public ExcelProperty setReadConverter(String readConverter) {
-    this.readConverter = readConverter;
-    return this;
-  }
-
-  public Options getOptions() {
-    return options;
-  }
-
-  public ExcelProperty setOptions(Options options) {
-    this.options = options;
-    return this;
-  }
-
-  public Integer getSort() {
-    return sort;
-  }
-
-  public ExcelProperty setSort(Integer sort) {
-    this.sort = sort;
-    return this;
-  }
-
-  public Integer getCellType() {
-    return cellType;
-  }
-
-  public ExcelProperty setCellType(Integer cellType) {
-    this.cellType = cellType;
-    return this;
-  }
-
-  public String getReason() {
-    return reason;
-  }
-
-  public ExcelProperty setReason(String reason) {
-    this.reason = reason;
-    return this;
-  }
-
-  public Boolean getRequire() {
-    return require;
-  }
-
-  public ExcelProperty setRequire(Boolean require) {
-    this.require = require;
-    return this;
-  }
-
-  public String getMethodName() {
-    return methodName;
-  }
-
-  public ExcelProperty setMethodName(String methodName) {
-    this.methodName = methodName;
-    return this;
-  }
-
-  public String getExchangeName() {
-    return exchangeName;
-  }
-
-  public ExcelProperty setExchangeName(String exchangeName) {
-    this.exchangeName = exchangeName;
-    return this;
-  }
-
-  public Boolean getExchange() {
-    return exchange;
-  }
-
-  public ExcelProperty setExchange(Boolean exchange) {
-    this.exchange = exchange;
-    return this;
-  }
-
-  public String getCheckMethod() {
-    return checkMethod;
-  }
-
-  public ExcelProperty setCheckMethod(String checkMethod) {
-    this.checkMethod = checkMethod;
-    return this;
-  }
 }

@@ -6,6 +6,7 @@ import com.git.poi.exception.AnnotationNotExistException;
 import com.git.poi.exception.ClassMappingException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class MappingFactory {
                         .setMaxLength(excelField.maxLength()).setWidth(excelField.width())
                         .setDateFormat(excelField.dateFormat()).setSort(excelField.sort()).setRequire(excelField.require())
                         .setExchange(excelField.exchange()).setMethodName(excelField.methodName()).setExchangeName(excelField.exchangeName())
-                .setCheckMethod(excelField.checkMethod())
+                        .setCheckMethod(excelField.checkMethod())
                 ;
                 propertyList.add(property);
             }
@@ -76,19 +77,12 @@ public class MappingFactory {
      * CELL_TYPE_BOOLEAN 布尔型 4
      * CELL_TYPE_ERROR 错误 5
      */
-    public static Integer cellTypeMapping(Field filed){
+    public static CellType cellTypeMapping(Field filed){
         Class clazz = filed.getType();
-        try {
-            if(clazz.newInstance() instanceof String)return Cell.CELL_TYPE_STRING;
-            if(clazz.newInstance() instanceof Number)return Cell.CELL_TYPE_NUMERIC;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return Cell.CELL_TYPE_STRING;
-
-
+        if(clazz==Number.class) return CellType.NUMERIC;
+        if(clazz==String.class) return CellType.STRING;
+        if(clazz==Boolean.class) return CellType.BOOLEAN;
+        return CellType.STRING;
     }
 
 }

@@ -236,18 +236,17 @@ public class WriteXlsxExcell {
         CellStyle mHeaderCellStyle = null;
         if (null == mHeaderCellStyle) {
             mHeaderCellStyle = wb.createCellStyle();
-            new XSSFCellStyle(new StylesTable()).getFillPattern();
             Font font = wb.createFont();
             mHeaderCellStyle.setFillForegroundColor((short) 12);
-            mHeaderCellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
-            mHeaderCellStyle.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
-            mHeaderCellStyle.setBorderRight(HSSFCellStyle.BORDER_DASH_DOT);
-            mHeaderCellStyle.setBorderBottom(HSSFCellStyle.BORDER_DOUBLE);
-            mHeaderCellStyle.setBorderLeft(HSSFCellStyle.BORDER_THICK);
-            mHeaderCellStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);// 对齐
-            mHeaderCellStyle.setFillBackgroundColor(HSSFColor.RED.index);
-            mHeaderCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
-            font.setColor(HSSFColor.WHITE.index);
+            mHeaderCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);//填充方式
+            mHeaderCellStyle.setBorderTop(BorderStyle.MEDIUM);
+            mHeaderCellStyle.setBorderRight(BorderStyle.MEDIUM_DASH_DOT);
+            mHeaderCellStyle.setBorderBottom(BorderStyle.DOUBLE);
+            mHeaderCellStyle.setBorderLeft(BorderStyle.THICK);
+            mHeaderCellStyle.setAlignment(HorizontalAlignment.LEFT);// 对齐
+            mHeaderCellStyle.setFillBackgroundColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+            mHeaderCellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+            font.setColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());
             // 应用标题字体到标题样式
             mHeaderCellStyle.setFont(font);//设置字体
             //设置单元格文本形式
