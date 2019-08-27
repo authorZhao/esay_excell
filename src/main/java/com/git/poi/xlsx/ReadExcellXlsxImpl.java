@@ -33,13 +33,7 @@ public class ReadExcellXlsxImpl<T> implements ReadExcell {
     }
 
     @Override
-    public ReadResult<T> readExcell(File f, Map checkMap) {
-        return null;
-    }
-
-
-    @Override
-    public ReadResult<T> readExcell(File f) {
+    public ReadResult<T> readExcell(File f, Map checkMap){
         ReadResult<T> readResult = new ReadResult<>();
         List<FailRecord> faileList = new ArrayList<>();
         List<T> list = new ArrayList<>();
@@ -54,9 +48,7 @@ public class ReadExcellXlsxImpl<T> implements ReadExcell {
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {//从第二行开始读取
             T t = null;
             try {
-               // t = mappingRowToList(sheet.getRow(i), excelMapping.getPropertyList());
-
-                t = ReadUtil.mappingRowToList(sheet.getRow(i), excelMapping.getPropertyList());
+                t = ReadUtil.mappingRowToList((Class<T>) clazz,sheet.getRow(i), excelMapping.getPropertyList());
                 Method m2 = clazz.getDeclaredMethod("setRowNums", List.class);
                 List<Integer> rowList = new ArrayList<>();
                 rowList.add(i);
@@ -76,9 +68,13 @@ public class ReadExcellXlsxImpl<T> implements ReadExcell {
             }
             if(t!=null)list.add(t);
         }
-        readResult.setSucesslist(list);
-        readResult.setFailRecordList(faileList);
-        readResult.setTotal(sheet.getLastRowNum());
-        return readResult;
+        return readResult.setSucesslist(list).setFailRecordList(faileList).setTotal(sheet.getLastRowNum());
+
+    }
+
+
+    @Override
+    public ReadResult<T> readExcell(File f) {
+        return readExcell(f,null);
     }
 }

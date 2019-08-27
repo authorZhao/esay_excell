@@ -19,7 +19,7 @@ public class PoiUtil {
             Cell cell0 = row.getCell(i);
             if(cell0==null)cell0=row.createCell(i);
             Cell cell1 = row1.createCell(i);
-            int type = cell0.getCellType();
+            int type = cell0.getCellType().getCode();
             cell1.setCellType(cell0.getCellType());
             switch (type){
                 case 0:cell1.setCellValue(cell0.getNumericCellValue());break;
