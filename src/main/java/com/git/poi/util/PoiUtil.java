@@ -1,6 +1,7 @@
 package com.git.poi.util;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.List;
@@ -19,13 +20,12 @@ public class PoiUtil {
             Cell cell0 = row.getCell(i);
             if(cell0==null)cell0=row.createCell(i);
             Cell cell1 = row1.createCell(i);
-            int type = cell0.getCellType().getCode();
-            cell1.setCellType(cell0.getCellType());
-            switch (type){
-                case 0:cell1.setCellValue(cell0.getNumericCellValue());break;
-                case 1:cell1.setCellValue(cell0.getStringCellValue());break;
-                case 2:cell1.setCellValue(cell0.getCellFormula());break;
-                case 4:cell1.setCellValue(cell0.getBooleanCellValue());break;
+            CellType cellType = cell0.getCellType();
+            switch (cellType){
+                case NUMERIC:cell1.setCellValue(cell0.getNumericCellValue());break;
+                case STRING:cell1.setCellValue(cell0.getStringCellValue());break;
+                case FORMULA:cell1.setCellValue(cell0.getCellFormula());break;
+                case BOOLEAN:cell1.setCellValue(cell0.getBooleanCellValue());break;
                 default: cell1.setCellValue("");break;
             }
         }
@@ -50,4 +50,6 @@ public class PoiUtil {
     public static String getString(List<String> list){
         return getString((String[])list.toArray());
     }
+
+
 }

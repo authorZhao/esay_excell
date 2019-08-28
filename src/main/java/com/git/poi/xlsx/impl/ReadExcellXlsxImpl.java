@@ -1,4 +1,4 @@
-package com.git.poi.xlsx;
+package com.git.poi.xlsx.impl;
 
 import com.git.poi.exception.FileException;
 import com.git.poi.mapping.ExcelMapping;
@@ -6,6 +6,7 @@ import com.git.poi.mapping.FailRecord;
 import com.git.poi.mapping.MappingFactory;
 import com.git.poi.mapping.ReadResult;
 import com.git.poi.util.ReadUtil;
+import com.git.poi.xlsx.ReadExcell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
