@@ -8,13 +8,7 @@ import java.util.function.Predicate;
  */
 public class Check {
 
-    public static final Predicate<String> PREDICAT_EEMAIL = RegexUtils::isEmail;
-    public static final Predicate<String> PREDICAT_EMOBILE = RegexUtils::isMobileNum;
-
-    public static Boolean isEmail(String email) {
-        return PREDICAT_EEMAIL.test(email);
-    }
-    public static Boolean isMobileNum(String mobileNum) {
-        return PREDICAT_EMOBILE.test(mobileNum);
+    public static Boolean isPassCheck(String str,Predicate<String> predicate) {
+        return predicate.test(str);
     }
 }

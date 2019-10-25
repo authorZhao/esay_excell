@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -20,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +35,7 @@ public class WriteXlsxExcellImpl implements WriteExcell {
         if(failRecordList==null||failRecordList.size()<=0)return workbook;
         //只拿第一张,或者循环
         XSSFSheet sheet = workbook.getSheetAt(0);
-        List<Integer> failRows = failRecordList.stream().map(FailRecord::getRowNum).collect(Collectors.toList());
+        List<Integer> failRows = failRecordList.stream().map(FailRecord::getRowNum).sorted().collect(Collectors.toList());
         failRows.add(0);//第一行保留
         List<Integer> totalRows = new ArrayList<>(sheet.getLastRowNum());
         for (int i = 0; i < sheet.getLastRowNum() ; i++) {
